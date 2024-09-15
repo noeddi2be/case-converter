@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <style>
+            .text1 {
+                height: 300px;
+                width: 400px;
+                padding: 1px;
+            }
+
+            .button {
+                height: 40px;
+                width: 100px;
+                padding: 1px;
+            }
+
+            .button-dl {
+                height: 40px;
+                width: 100px;
+                padding: 1px;
+                align-self: center;
+                margin-top: 3px;
+            }
+
+            .mainContainer {
+                height: auto;
+                width: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="mainContainer">
+            <h1 class="title">Case Converter</h1>
+            <label>
+                <textarea class="text1" id="userText"></textarea>
+            </label>
+            <div class="container1">
+                <button class="button" id="upper-case">
+                    Upper Case
+                </button>
+                <button class="button" id="lower-case">
+                    Lower Case
+                </button>
+                <button class="button" id="proper-case">
+                    Proper Case
+                </button>
+                <button class="button" id="sentence-case">
+                    Sentence Case
+                </button>
+            </div>
+            <div class="container2">
+                <button class="button-dl" id="save-text-file">
+                    Download
+                </button>
+            </div>
+        </div>
+        <script>
+            const btnUC = document.getElementById("upper-case");
+            const btnLC = document.getElementById("lower-case");
+            const btnPC = document.getElementById("proper-case");
+            const btnSC = document.getElementById("sentence-case");
+            const btnDL = document.getElementById("save-text-file");
+
+            let textfield = document.getElementById("userText");
+
+            btnUC.addEventListener("click", function () {
+                textfield.value = textToUpperCase(textfield.value);
+            });
+
+            btnLC.addEventListener("click", function () {
+                textfield.value = textToLowerCase(textfield.value);
+            });
+
+            btnPC.addEventListener("click", function () {
+                textfield.value = textToProperCase(textfield.value);
+            });
+
+            btnSC.addEventListener("click", function () {
+                textfield.value = textToSentenceCase(textfield.value);
+            });
+
+            btnDL.addEventListener("click", function () {
+                downloadTextFile("text.txt", textfield.value);
+            })
+
+            function textToUpperCase(text) {
+                return String(text).toUpperCase();
+            }
+
+            function textToLowerCase(text) {
+                return String(text).toLowerCase();
+            }
+
+            function textToProperCase(text) {
+                let newString = String(text[0].toUpperCase());
+                for (let i = 1; i < text.length; i++) {
+                    if (text[i] === " " && text[i + 1] !== " ") {
+                        i++;
+                        newString = newString.concat(" ", text[i].toUpperCase());
+                    } else {
+                        newString = newString.concat(text[i].toLowerCase());
+                    }
+                }
+                return newString;
+            }
+
+            function textToSentenceCase(text) {
+                let newString = String(text[0].toUpperCase());
+                let capitalizeNext = false;
+
+                for (let i = 1; i < text.length; i++) {
+                    if (text[i] === '.' || text[i] === '!' || text[i] === '?') {
+                        newString += text[i];
+                        capitalizeNext = true;
+                        while (i + 1 < text.length && text[i + 1] === ' ') {
+                            newString += ' ';
+                            i++;
+                        }
+                    } else if (capitalizeNext) {
+                        newString += text[i].toUpperCase();
+                        capitalizeNext = false;
+                    } else {
+                        newString += text[i].toLowerCase();
+                    }
+                }
+                return newString;
+            }
+
+            function downloadTextFile(filename, text) {
+                let element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8i,' + encodeURIComponent(text));
+                element.setAttribute('download', filename);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+
+                element.click();
+
+                document.body.removeChild(element);
+            }
+        </script>
+    </body>
+</html>
